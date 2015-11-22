@@ -1,7 +1,6 @@
 package com.slateandpencil.watermeter;
 
-import android.app.ActionBar;
-import android.app.FragmentTransaction;
+
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
@@ -11,7 +10,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,8 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager viewPager;
     private FloatingActionButton fab;
     private boolean isFabOpen=false;
-    private ActionBar actionBar;
-    private Animation fab_open,fab_close,rotate_forward,rotate_backward;
+    private Animation fab_open,fab_close;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,20 +44,6 @@ public class MainActivity extends AppCompatActivity {
         rotate_forward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_forward);
         rotate_backward = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_backward);
         fab.startAnimation(fab_open);
-        /*actionBar =getActionBar();
-        ActionBar.TabListener tabListener=new ActionBar.TabListener(){
-            @Override
-            public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
-                String text=tab.getText().toString();
-                if(text.equals("TANKS")){
-                    Log.v("hai","tank selected");
-
-                }
-
-            }
-
-
-        };*/
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
