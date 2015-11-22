@@ -1,6 +1,7 @@
 package com.slateandpencil.watermeter;
 
 
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
@@ -39,22 +40,26 @@ public class MainActivity extends AppCompatActivity {
         setupViewPager(viewPager);
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout){
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab_open = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
+        fab_close = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_close);
+        fab.startAnimation(fab_open);
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout) {
             @Override
-        public void onPageSelected(int position){
-                if(position==0)
+            public void onPageSelected(int position) {
+                if (position == 0)
                     fab.startAnimation(fab_open);
                 else
                     fab.startAnimation(fab_close);
             }
         });
-        fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab_open = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
-        fab_close = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_close);
-        fab.startAnimation(fab_open);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent intent=new Intent(MainActivity.this,add_tank.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.swap_in_bottom, R.anim.swap_out_bottom);
+               // finish();
 
             }
         });
