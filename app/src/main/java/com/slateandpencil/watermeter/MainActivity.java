@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,11 +39,18 @@ public class MainActivity extends AppCompatActivity {
         setupViewPager(viewPager);
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout){
+            @Override
+        public void onPageSelected(int position){
+                if(position==0)
+                    fab.startAnimation(fab_open);
+                else
+                    fab.startAnimation(fab_close);
+            }
+        });
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab_open = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
-        fab_close = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fab_close);
-        rotate_forward = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate_forward);
-        rotate_backward = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_backward);
+        fab_close = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_close);
         fab.startAnimation(fab_open);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
