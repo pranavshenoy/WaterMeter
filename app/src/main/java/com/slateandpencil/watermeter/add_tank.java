@@ -26,15 +26,14 @@ public class add_tank extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item){
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(intent);
-        finish();
-        overridePendingTransition(R.anim.swap_in_bottom, R.anim.swap_out_bottom);
+        overridePendingTransition(R.anim.abc_grow_fade_in_from_bottom, R.anim.abc_slide_out_bottom);
         return true;
 
     }
     @Override
     public void onBackPressed(){
         super.onBackPressed();
-        overridePendingTransition(R.anim.swap_in_bottom, R.anim.swap_out_bottom);
+        overridePendingTransition(R.anim.abc_grow_fade_in_from_bottom, R.anim.abc_slide_out_bottom);
     }
 
 }

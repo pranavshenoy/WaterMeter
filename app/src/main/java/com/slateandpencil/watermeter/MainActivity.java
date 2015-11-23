@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent=new Intent(MainActivity.this,add_tank.class);
                 startActivity(intent);
-                overridePendingTransition(R.anim.swap_in_bottom, R.anim.swap_out_bottom);
+                overridePendingTransition(R.anim.abc_slide_in_bottom,R.anim.abc_shrink_fade_out_from_bottom);
                // finish();
 
             }
