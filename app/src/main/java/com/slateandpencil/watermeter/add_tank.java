@@ -6,10 +6,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-<<<<<<< HEAD
-=======
 import android.view.Menu;
->>>>>>> Design_Branch
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -23,19 +20,9 @@ public class add_tank extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-<<<<<<< HEAD
-        Toast.makeText(add_tank.this, "NEw activity", Toast.LENGTH_SHORT).show();
 
     }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item){
-        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-        startActivity(intent);
-        overridePendingTransition(R.anim.abc_grow_fade_in_from_bottom, R.anim.abc_slide_out_bottom);
-        return true;
-=======
 
-    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -63,7 +50,7 @@ public class add_tank extends AppCompatActivity {
         overridePendingTransition(R.anim.abc_grow_fade_in_from_bottom, R.anim.abc_slide_out_bottom);
         return true;//return super.onOptionsSelected(MenuItem item);
 
->>>>>>> Design_Branch
+
 
     }
     @Override
