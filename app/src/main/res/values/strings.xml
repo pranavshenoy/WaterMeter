@@ -5,4 +5,5 @@
     <string name="tank_name">Tank Name</string>
     <string name="tank_ip">IP Address</string>
     <string name="tank_port">Port</string>
+    <string name="title_activity_display_level">display_level</string>
 </resources>

@@ -21,11 +21,16 @@
         <activity
             android:name=".add_tank"
             android:label="@string/title_activity_add_tank"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity"></meta-data>
+                android:value=".MainActivity" />
+        </activity>
+        <activity
+            android:name=".display_level"
+            android:label="@string/title_activity_display_level"
+            android:theme="@style/AppTheme.NoActionBar" >
         </activity>
     </application>
 
