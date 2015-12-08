@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
         fab_open = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
         fab_close = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_close);
         fab.startAnimation(fab_open);
+        startService();
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout) {
             @Override
             public void onPageSelected(int position) {
@@ -121,5 +122,15 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    // Method to start the service
+    public void startService() {
+        startService(new Intent(getBaseContext(), MyService.class));
+    }
+
+    // Method to stop the service
+    public void stopService(View view) {
+        stopService(new Intent(getBaseContext(), MyService.class));
     }
 }
