@@ -48,8 +48,9 @@ public class add_tank extends AppCompatActivity {
         SQLiteDatabase sb;
         switch (item.getItemId()){
             case R.id.save:
+                sb=openOrCreateDatabase("watermeter", MODE_PRIVATE, null);
+                Toast.makeText(add_tank.this, ""+MODE_PRIVATE, Toast.LENGTH_SHORT).show();
                 if(!database.exists()){
-                   sb=openOrCreateDatabase("watermeter", MODE_PRIVATE, null);
                     sb.execSQL("CREATE TABLE IF NOT EXISTS `tank` (\n" +
                             "  `num` number(10),\n" +
                             "  `name` varchar(100),\n" +
@@ -57,9 +58,6 @@ public class add_tank extends AppCompatActivity {
                             "  `port` varchar(100),\n" +
                             "  `enable` number(1)\n" +
                             ");");
-                }
-                else {
-                    sb=openOrCreateDatabase("watermeter", MODE_PRIVATE, null);
                 }
                 String name=tank_name.getText().toString();
                 String ip=ip_addr.getText().toString();
