@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.io.File;
 import java.util.ArrayList;
 import static android.R.layout.simple_list_item_1;
 import static android.database.sqlite.SQLiteDatabase.openDatabase;
@@ -21,37 +22,49 @@ import static android.database.sqlite.SQLiteDatabase.openOrCreateDatabase;
  */
 public class Tab1 extends Fragment {
     ListView lv;
-    SQLiteDatabase sb = openOrCreateDatabase("watermeter",MainActivity.MODE_PRIVATE,null);
+    File database;
+    SQLiteDatabase sb;
     Cursor resultSet=null;
+    TextView textView;
     public Tab1()
     {
 
     }
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        Boolean flag=false;
-        TextView t=(TextView)getView().findViewById(R.id.empty_list);
-        lv = (ListView) getView().findViewById(R.id.listView);
-        ArrayList<String> x= new ArrayList<String>();
-
-        resultSet=sb.rawQuery("Select name from tank;",null);
-        while(resultSet.moveToNext()){
-            x.add(resultSet.getString(0));
-        }
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), simple_list_item_1, x);
-        if(flag)
-            t.setText("");
-        else
-            t.setText("Nothing to show");
-
-        lv.setAdapter(adapter);
-    }
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
         return inflater.inflate(R.layout.tab1, container, false);
+    }
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState){
+        super.onActivityCreated(savedInstanceState);
+        textView=(TextView)getView().findViewById(R.id.empty_list);
+        database=getActivity().getDatabasePath("watermeter");
+        sb = getActivity().openOrCreateDatabase("watermeter",android.content.Context.MODE_PRIVATE, null);
+        if(!database.exists()) {
+            sb.execSQL("CREATE TABLE IF NOT EXISTS `tank` (\n" +
+                    "  `num` number(10),\n" +
+                    "  `name` varchar(100),\n" +
+                    "  `ip` varchar(100) ,\n" +
+                    "  `port` varchar(100),\n" +
+                    "  `enable` number(1)\n" +
+                    ");");
+        }
+        resultSet=sb.rawQuery("select name from tank;",null);
+        if(resultSet.getCount()==0){
+            textView.setVisibility(View.VISIBLE);
+        }
+        else{
+            textView.setVisibility(View.GONE);
+        }
+        lv=(ListView)getView().findViewById(R.id.listView);
+        ArrayList<String> x=new ArrayList<String>();
+        while(resultSet.moveToNext()){
+            x.add(resultSet.getString(0));
+        }
+        ArrayAdapter<String> adapter=new ArrayAdapter<String>(getActivity(),simple_list_item_1,x);
+        lv.setAdapter(adapter);
     }
 }

@@ -2,6 +2,7 @@ package com.slateandpencil.watermeter;
 
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
@@ -16,23 +17,40 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.database.sqlite.SQLiteDatabase.openOrCreateDatabase;
+
 
 public class MainActivity extends AppCompatActivity {
-
+    private File database;
     private Toolbar toolbar;
+    private SQLiteDatabase sb;
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private FloatingActionButton fab;
-    private boolean isFabOpen=false;
     private Animation fab_open,fab_close;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        database=getDatabasePath("watermeter");
+        if(!database.exists()) {
+            sb = openOrCreateDatabase("watermeter", MainActivity.MODE_PRIVATE, null);
+            sb.execSQL("CREATE TABLE IF NOT EXISTS `tank` (\n" +
+                    "  `num` number(10),\n" +
+                    "  `name` varchar(100),\n" +
+                    "  `ip` varchar(100) ,\n" +
+                    "  `port` varchar(100),\n" +
+                    "  `enable` number(1)\n" +
+                    ");");
+        }
+
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -66,7 +84,8 @@ public class MainActivity extends AppCompatActivity {
         });
     }
     private void setupViewPager(ViewPager viewPager) {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+
+            ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new Tab1(), "TANKS");
         adapter.addFragment(new Tab2(), "SETTINGS");
         viewPager.setAdapter(adapter);
@@ -123,6 +142,12 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+    @Override
+    public void onRestart(){
+        super.onRestart();
+        recreate();
+    }
+
 
     // Method to start the service
     public void startService() {
