@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
         fab_open = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
         fab_close = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_close);
         fab.startAnimation(fab_open);
-        startService();
+        //startService();
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout) {
             @Override
             public void onPageSelected(int position) {

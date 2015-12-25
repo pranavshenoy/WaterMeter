@@ -1,5 +1,6 @@
 package com.slateandpencil.watermeter;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v4.app.Fragment;
@@ -7,6 +8,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -52,7 +54,7 @@ public class Tab1 extends Fragment {
                     "  `enable` number(1)\n" +
                     ");");
         }
-        resultSet=sb.rawQuery("select name from tank;",null);
+        resultSet=sb.rawQuery("select name from tank where enable = 1;",null);
         if(resultSet.getCount()==0){
             textView.setVisibility(View.VISIBLE);
         }
@@ -66,5 +68,18 @@ public class Tab1 extends Fragment {
         }
         ArrayAdapter<String> adapter=new ArrayAdapter<String>(getActivity(),simple_list_item_1,x);
         lv.setAdapter(adapter);
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+
+            @Override
+            public void onItemClick(AdapterView<?> adapter, View v, int position, long ld) {
+
+                String s= (String)adapter.getItemAtPosition(position);
+                Intent intent = new Intent(getActivity(), display_level.class);
+                intent.putExtra("tank_name",s);
+                Tab1.this.startActivity(intent);
+
+            }
+        });
     }
 }

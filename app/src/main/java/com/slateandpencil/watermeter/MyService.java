@@ -80,32 +80,12 @@ public class MyService extends Service {
         protected void onPostExecute(InfoPasser infoPasser){
             Toast.makeText(MyService.this,""+infoPasser.checkpoint, Toast.LENGTH_SHORT).show();
             Toast.makeText(MyService.this,infoPasser.msg, Toast.LENGTH_SHORT).show();
-           /*/////trial
-            NotificationManager notificationManager =
-                    (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-            int icon = R.mipmap.ic_launcher;
-            CharSequence notiText = "Your notification from the service";
-            long meow = System.currentTimeMillis();
-
-            Notification notification = new Notification(icon, notiText, meow);
-
-            Context context = getApplicationContext();
-            CharSequence contentTitle = "Data Arriced";
-            CharSequence contentText = infoPasser.msg;
-            Intent notificationIntent = new Intent(MyService.this, MainActivity.class);
-            PendingIntent contentIntent = PendingIntent.getActivity(MyService.this, 0, notificationIntent, 0);
-
-            notification.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
-
-            int SERVER_DATA_RECEIVED = 1;
-            notificationManager.notify(SERVER_DATA_RECEIVED, notification);
-            ///////trial ends*/
             NotificationCompat.Builder mBuilder =
                     new NotificationCompat.Builder(MyService.this)
                             .setSmallIcon(R.mipmap.ic_launcher)
                             .setContentTitle("Data Arrived")
                             .setContentText(infoPasser.msg);
-            mBuilder.setDefaults(Notification.DEFAULT_ALL);
+                            //.setDefaults(Notification.DEFAULT_ALL);
 // Creates an explicit intent for an Activity in your app
             Intent resultIntent = new Intent(MyService.this, MainActivity.class);
 

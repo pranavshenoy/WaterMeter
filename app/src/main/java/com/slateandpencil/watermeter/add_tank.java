@@ -24,28 +24,44 @@ public class add_tank extends AppCompatActivity {
 
     EditText tank_name, ip_addr, port_no;
     SwitchCompat notification;
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    private GoogleApiClient client;
+    boolean option;
+    int tank_no;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        option=getIntent().getBooleanExtra("option",true);
         setContentView(R.layout.activity_add_tank);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         tank_name = (EditText) findViewById(R.id.input_name);
         ip_addr = (EditText) findViewById(R.id.input_ip);
         port_no = (EditText) findViewById(R.id.input_port);
         notification = (SwitchCompat) findViewById(R.id.Switch);
+        if(option==false){
+            setTitle(R.string.action_settings);
+            tank_no=getIntent().getIntExtra("tank_no", 1);
+            SQLiteDatabase sb;
+            sb=openOrCreateDatabase("watermeter",MODE_PRIVATE,null);
+            Cursor resultSet;
+            resultSet=sb.rawQuery("select name,ip,port,enable from tank where num = "+tank_no+";",null);
+            resultSet.moveToNext();
+            tank_name.setText(resultSet.getString(0));
+            ip_addr.setText(resultSet.getString(1));
+            port_no.setText(resultSet.getString(2));
+            if(resultSet.getString(3).equals("1"))
+                notification.setChecked(true);
+            else
+                notification.setChecked(false);
+        }
+        else{
+
+        }
 
 
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+
     }
 
     @Override
@@ -71,7 +87,7 @@ public class add_tank extends AppCompatActivity {
                     enable = 1;
                 else
                     enable = 0;
-                resultSet = sb.rawQuery("Select count(*) from  tank", null);
+                resultSet = sb.rawQuery("Select count(*) from  tank;", null);
                 while (resultSet.moveToNext()) {
                     count = Integer.parseInt(resultSet.getString(0));
                 }
