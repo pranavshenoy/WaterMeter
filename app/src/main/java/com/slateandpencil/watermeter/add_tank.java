@@ -24,18 +24,19 @@ public class add_tank extends AppCompatActivity {
 
     EditText tank_name, ip_addr, port_no;
     SwitchCompat notification;
-    boolean option;
+    boolean option=true;
     int tank_no;
+    Cursor resultSet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        option=getIntent().getBooleanExtra("option",true);
+
         setContentView(R.layout.activity_add_tank);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        option=getIntent().getBooleanExtra("option",true);
         tank_name = (EditText) findViewById(R.id.input_name);
         ip_addr = (EditText) findViewById(R.id.input_ip);
         port_no = (EditText) findViewById(R.id.input_port);
@@ -45,7 +46,6 @@ public class add_tank extends AppCompatActivity {
             tank_no=getIntent().getIntExtra("tank_no", 1);
             SQLiteDatabase sb;
             sb=openOrCreateDatabase("watermeter",MODE_PRIVATE,null);
-            Cursor resultSet;
             resultSet=sb.rawQuery("select name,ip,port,enable from tank where num = "+tank_no+";",null);
             resultSet.moveToNext();
             tank_name.setText(resultSet.getString(0));
@@ -56,48 +56,64 @@ public class add_tank extends AppCompatActivity {
             else
                 notification.setChecked(false);
         }
-        else{
-
-        }
-
-
 
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
+
+
         getMenuInflater().inflate(R.menu.toolbar_actions, menu);
+        if(option==true) {
+            MenuItem item = menu.findItem(R.id.delete);
+            item.setVisible(false);
+        }
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        SQLiteDatabase sb;
+        SQLiteDatabase sb=openOrCreateDatabase("watermeter", MODE_PRIVATE, null);
+        String name = tank_name.getText().toString();
+        String ip = ip_addr.getText().toString();
+        String port = port_no.getText().toString();
+        int enable;
+        int count = 0;
+        if (notification.isChecked())
+            enable = 1;
+        else
+            enable = 0;
         switch (item.getItemId()) {
             case R.id.save:
-                sb = openOrCreateDatabase("watermeter", MODE_PRIVATE, null);
-                String name = tank_name.getText().toString();
-                String ip = ip_addr.getText().toString();
-                String port = port_no.getText().toString();
-                int enable;
-                int count = 0;
-                Cursor resultSet;
-                if (notification.isChecked())
-                    enable = 1;
-                else
-                    enable = 0;
-                resultSet = sb.rawQuery("Select count(*) from  tank;", null);
-                while (resultSet.moveToNext()) {
-                    count = Integer.parseInt(resultSet.getString(0));
-                }
-                sb.execSQL("INSERT INTO 'tank' ('num','name','ip','port','enable') VALUES\n" +
-                        "('" + (count + 1) + "','" + name + "','" + ip + "','" + port + "','" + enable + "');");
+                if(option==true){
+                    resultSet = sb.rawQuery("Select num from  tank;", null);
+                    while (resultSet.moveToNext()){
+                    count = Integer.parseInt(resultSet.getString(0));}
+                    sb.execSQL("INSERT INTO 'tank' ('num','name','ip','port',enable) VALUES\n" +
+                            "('" + (count + 1) + "','" + name + "','" + ip + "','" + port + "'," + enable + ");");
 
-                Toast.makeText(add_tank.this, "Added New Tank with no" + (count + 1), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(add_tank.this, "Added New Tank", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    resultSet=sb.rawQuery("select name,ip,port,enable from tank where num = "+tank_no+";",null);
+                    resultSet.moveToNext();
+                    if(resultSet.getString(0).equals(name)&&resultSet.getString(1).equals(ip)&&resultSet.getString(2).equals(port)&&resultSet.getString(3).equals("1")){
+                        Toast.makeText(add_tank.this,"No changes made", Toast.LENGTH_SHORT).show();
+                    }
+                    else{
+                        sb.execSQL("update 'tank' set 'name'='"+name+"','ip'='"+ip+"','port'='"+port+"','enable'='"+enable+"' where num = "+tank_no+";");
+                        Toast.makeText(add_tank.this,"Changes Saved", Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+
+               // Cursor resultSet;
+
                 break;
             case R.id.delete:
-                Toast.makeText(add_tank.this, "Changes Discarded", Toast.LENGTH_SHORT).show();
+                sb.execSQL("delete from tank where num="+tank_no+";");
+                Toast.makeText(add_tank.this,"Tank removed", Toast.LENGTH_SHORT).show();
                 break;
             default:
                 Toast.makeText(add_tank.this, "Changes Discarded", Toast.LENGTH_SHORT).show();

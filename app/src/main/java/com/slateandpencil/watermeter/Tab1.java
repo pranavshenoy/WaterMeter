@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -76,7 +77,11 @@ public class Tab1 extends Fragment {
 
                 String s= (String)adapter.getItemAtPosition(position);
                 Intent intent = new Intent(getActivity(), display_level.class);
-                intent.putExtra("tank_name",s);
+                resultSet=sb.rawQuery("select num from tank where name ='"+s+"';",null);
+                resultSet.moveToNext();
+                int num= Integer.parseInt(resultSet.getString(0));
+                Toast.makeText(getActivity(), ""+num, Toast.LENGTH_SHORT).show();
+                intent.putExtra("tank_no",num);
                 Tab1.this.startActivity(intent);
 
             }

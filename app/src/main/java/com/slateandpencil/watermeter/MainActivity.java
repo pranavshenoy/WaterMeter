@@ -2,6 +2,7 @@ package com.slateandpencil.watermeter;
 
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -36,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager viewPager;
     private FloatingActionButton fab;
     private Animation fab_open,fab_close;
+    private Cursor resultSet;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,7 +52,6 @@ public class MainActivity extends AppCompatActivity {
                     "  `enable` number(1)\n" +
                     ");");
         }
-
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -62,7 +63,11 @@ public class MainActivity extends AppCompatActivity {
         fab_open = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
         fab_close = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_close);
         fab.startAnimation(fab_open);
-        //startService();
+        Cursor resultset=sb.rawQuery("select count(*) from tank where enable=1",null);
+        resultset.moveToNext();
+        if(!resultset.getString(0).equals("0"))
+            startService();
+        sb.close();
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout) {
             @Override
             public void onPageSelected(int position) {
@@ -145,6 +150,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRestart(){
         super.onRestart();
+        stopService();
         recreate();
     }
 
@@ -155,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Method to stop the service
-    public void stopService(View view) {
+    public void stopService() {
         stopService(new Intent(getBaseContext(), MyService.class));
     }
 }

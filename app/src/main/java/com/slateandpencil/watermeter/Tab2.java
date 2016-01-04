@@ -68,7 +68,7 @@ public class Tab2 extends Fragment {
 
                 intent.putExtra("option", false);
 
-                Toast.makeText(getActivity(), position + "", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), (position+1) + "", Toast.LENGTH_SHORT).show();
                 intent.putExtra("tank_no", position + 1);
                 Tab2.this.startActivity(intent);
 
