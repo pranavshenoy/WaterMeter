@@ -1,7 +1,10 @@
 package com.slateandpencil.watermeter;
 
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v4.app.Fragment;
@@ -13,6 +16,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,17 +36,21 @@ import static android.database.sqlite.SQLiteDatabase.openOrCreateDatabase;
 public class MainActivity extends AppCompatActivity {
     private File database;
     private Toolbar toolbar;
+    MyWebRequestReceiver receiver;
+
     private SQLiteDatabase sb;
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private FloatingActionButton fab;
-    private Animation fab_open,fab_close;
+    private Animation fab_open, fab_close;
     private Cursor resultSet;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        database=getDatabasePath("watermeter");
-        if(!database.exists()) {
+        database = getDatabasePath("watermeter");
+        if (!database.exists()) {
             sb = openOrCreateDatabase("watermeter", MainActivity.MODE_PRIVATE, null);
             sb.execSQL("CREATE TABLE IF NOT EXISTS `tank` (\n" +
                     "  `num` number(10),\n" +
@@ -51,11 +59,13 @@ public class MainActivity extends AppCompatActivity {
                     "  `port` varchar(100),\n" +
                     "  `enable` number(1)\n" +
                     ");");
+        } else {
+            sb = openOrCreateDatabase("watermeter", MainActivity.MODE_PRIVATE, null);
         }
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        viewPager=(ViewPager)findViewById(R.id.viewpager);
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
         setupViewPager(viewPager);
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
@@ -63,11 +73,10 @@ public class MainActivity extends AppCompatActivity {
         fab_open = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
         fab_close = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_close);
         fab.startAnimation(fab_open);
-        Cursor resultset=sb.rawQuery("select count(*) from tank where enable=1",null);
+        Cursor resultset = sb.rawQuery("select count(*) from tank where enable=1", null);
         resultset.moveToNext();
-        if(!resultset.getString(0).equals("0"))
+        if (!resultset.getString(0).equals("0"))
             startService();
-        sb.close();
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout) {
             @Override
             public void onPageSelected(int position) {
@@ -80,21 +89,27 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent(MainActivity.this,add_tank.class);
+                Intent intent = new Intent(MainActivity.this, add_tank.class);
                 startActivity(intent);
-                overridePendingTransition(R.anim.abc_slide_in_bottom,R.anim.abc_shrink_fade_out_from_bottom);
-               // finish();
+                overridePendingTransition(R.anim.abc_slide_in_bottom, R.anim.abc_shrink_fade_out_from_bottom);
+                // finish();
 
             }
         });
+        IntentFilter filter = new IntentFilter(MyWebRequestReceiver.PROCESS_RESPONSE);
+
+        receiver = new MyWebRequestReceiver();
+        registerReceiver(receiver, filter);
     }
+
     private void setupViewPager(ViewPager viewPager) {
 
-            ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new Tab1(), "TANKS");
         adapter.addFragment(new Tab2(), "SETTINGS");
         viewPager.setAdapter(adapter);
     }
+
     class ViewPagerAdapter extends FragmentPagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();
         private final List<String> mFragmentTitleList = new ArrayList<>();
@@ -125,11 +140,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-       // getMenuInflater().inflate(R.menu.menu_main, menu);
+        // getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
@@ -147,8 +161,9 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
     @Override
-    public void onRestart(){
+    public void onRestart() {
         super.onRestart();
         stopService();
         recreate();
@@ -164,4 +179,22 @@ public class MainActivity extends AppCompatActivity {
     public void stopService() {
         stopService(new Intent(getBaseContext(), MyService.class));
     }
+
+
+    public class MyWebRequestReceiver extends BroadcastReceiver {
+
+        public static final String PROCESS_RESPONSE = "com.as400samplecode.intent.action.PROCESS_RESPONSE";
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            int s=getIntent().getIntExtra("0",100);
+
+            Toast.makeText(getApplicationContext(),""+s,Toast.LENGTH_LONG).show();
+
+
+        }
+
+    }
 }
+
